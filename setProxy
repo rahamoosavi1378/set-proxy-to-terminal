@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # Set Proxy Shell -----------------------------------
 
@@ -9,7 +10,7 @@
 # default My Proxy
 defaultMyProxy="socks5://127.0.0.1:1089"
 
-# API Key 
+# API Key
 # ApiKey="bf784d91a6d0943ded0400107856d8c2f531517dc4592d74057bf71d"
 
 # Reset
@@ -46,53 +47,53 @@ On_Cyan='\033[46m'        # Cyan
 On_White='\033[47m'       # White
 
 textHelp=""" ${Red}--------------------${Color_Off}
- `echo -e "${Purple}\$ ${Color_Off}$(basename ${0}) ${Blue}[option] ${Color_Off}"`
+`echo -e "${Purple}\$ ${Color_Off}$(basename ${0}) ${Blue}[option] ${Color_Off}"`
 
- [option]
-    -t | tor                   : set proxy default tor port 9050
-    -t2 | tor2                 : set proxy default tor port 9150
-    -s [Proxy] | set [Proxy]   : set Proxy custom
-    -me | me                   : set proxy default config me (${defaultMyProxy})
-    -d | --unset | d | unset   : un set Proxy in terminal 
-    -h | --help | help         : echo Help
-    -status | status           : echo Status
-    -err                       : echo show Errors
+[option]
+-t | tor                   : set proxy default tor port 9050
+-t2 | tor2                 : set proxy default tor port 9150
+-s [Proxy] | set [Proxy]   : set Proxy custom
+-me | me                   : set proxy default config me (${defaultMyProxy})
+-d | --unset | d | unset   : un set Proxy in terminal
+-h | --help | help         : echo Help
+-status | status           : echo Status
+-err                       : echo show Errors
 
- [Proxy] 
-    -P [Protcol]               : set Protcol (h = http, hs = https, s5 = socks5) (default s5)
-    -H [Host] | Host [Host]    : set Host Proxy custom (default 127.1)
-    -p | prot                  : set port Proxy custom (default 9050)
+[Proxy]
+-P [Protcol]               : set Protcol (h = http, hs = https, s5 = socks5) (default s5)
+-H [Host] | Host [Host]    : set Host Proxy custom (default 127.1)
+-p | prot                  : set port Proxy custom (default 9050)
 
- [Host]
-    -H [HostName]              : set Host (127.1, 127.0.0.1 , ::, Hsot external{Domain})
+[Host]
+-H [HostName]              : set Host (127.1, 127.0.0.1 , ::, Hsot external{Domain})
 
- [example]
-    -> example: http://127.0.0.1:1089   
-    -> example: -s -P h -H 127.1 -p 1089 
+[example]
+-> example: http://127.0.0.1:1089
+-> example: -s -P h -H 127.1 -p 1089
 
-    -> example: https://127.0.0.1:8889
-    -> example: set -P hs -H 127.1 -p 8889
-    
-    -> example: socks5://127.0.0.1:9050 
-    -> example: set -P s5 -H 127.1 -p 9050
-        
+-> example: https://127.0.0.1:8889
+-> example: set -P hs -H 127.1 -p 8889
 
- myExample: $ $(basename ${0}) socks5://127.1:9050
- myExample: $ $(basename ${0}) set -P s5 -p 9050
- myExample: $ $(basename ${0}) set -P s5 -H 127.1 -p 9050 
- myExample: $ $(basename ${0}) set -H 0
- myExample: $ $(basename ${0}) me """
+-> example: socks5://127.0.0.1:9050
+-> example: set -P s5 -H 127.1 -p 9050
+
+
+myExample: $ $(basename ${0}) socks5://127.1:9050
+myExample: $ $(basename ${0}) set -P s5 -p 9050
+myExample: $ $(basename ${0}) set -P s5 -H 127.1 -p 9050
+myExample: $ $(basename ${0}) set -H 0
+myExample: $ $(basename ${0}) me """
 
 textErr=""" ${Red}-----------------------------------${Color_Off}
- [${Red}err${Color_Off}] ${On_Red} proxy Off | set proxy false ${Color_Off}
- ${Red}-----------------------------------${Color_Off}"""
+[${Red}err${Color_Off}] ${On_Red} proxy Off | set proxy false ${Color_Off}
+${Red}-----------------------------------${Color_Off}"""
 
 export _OLD_PS1="$PS1"
 
 setProxy() {
-
-    option="${1}" 
-
+    
+    option="${1}"
+    
     case ${option} in
         -h|--help|help)
             echo -e "$textHelp"
@@ -112,8 +113,8 @@ setProxy() {
             emoji_status="🟢${On_Cyan} me ${Color_Off}"
             _FuncSetProxy
         ;;
-
-        -s|set) 
+        
+        -s|set)
             if [[ ${2} =~ ^(http|https|socks5)\:\/\/[0-9a-zA-Z]+\.*[0-9a-zA-Z]*\.*[0-9a-zA-Z]*\.*[0-9a-zA-Z]*\:[0-9]+ ]]; then
                 proxy="$2"
                 emoji_status="🟢${On_Cyan} set ${Color_Off}"
@@ -122,7 +123,7 @@ setProxy() {
                 setProtcolDefault="socks5"
                 setHostDefault="127.1"
                 setPortDefault="9050"
-
+                
                 _setOption=(${*})
                 setOption=(${_setOption[@]:1})
                 for i in {1..6}; do
@@ -157,13 +158,13 @@ setProxy() {
                 _FuncSetProxy
             fi
         ;;
-
+        
         -d|--unset|d|unset)
             if [ ! -z $http_proxy ]; then
                 _FuncUnSetProxy
                 echo -e "${On_Blue} unset Proxy Done ! ${Color_Off}"
                 return
-            else 
+            else
                 echo -e "${On_Cyan} no set Proxy !!! ${Color_Off}"
             fi
         ;;
@@ -171,13 +172,13 @@ setProxy() {
             echo -e "$textHelp"
         ;;
     esac
-
+    
 }
 
 _FuncSetProxy() {
-
+    
     _FuncUnSetProxy
-
+    
     export http_proxy="$proxy"
     export https_proxy="$proxy"
     # req=`curl -s https://api.ipdata.co\?api-key="${ApiKey}" | jq -r "."`
@@ -186,22 +187,22 @@ _FuncSetProxy() {
     my_ip=`echo "$req" | jq -r .query`
     # country_name=`echo "$req" | jq -r ".country_name"`
     country_name=`echo "$req" | jq -r ".country"`
-
+    
     if [[ ! $my_ip ]]; then
         echo -e "$textErr"
         my_ip="${On_Red}err${Color_Off}"
         emoji_status="🔴${On_Red} X ${Color_Off}"
         country_name="-"
     fi
-
+    
     export PS1=`echo -e "\n -> [$emoji_status][ ${my_ip} ][ $country_name ] ${PS1-}"`
-
+    
 }
 
 _FuncUnSetProxy() {
-
+    
     unset http_proxy
-    unset https_proxy  
+    unset https_proxy
     export PS1="${_OLD_PS1-}"
-
+    
 }
