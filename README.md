@@ -20,7 +20,7 @@ to `.zshrc` or `.bashrc`
 
 ---
 
-help :
+## help
 
 ```text
 $ setProxy -h
