@@ -1,0 +1,207 @@
+
+# Set Proxy Shell -----------------------------------
+
+# site          : https://api.ipdata.co/
+# Email         : territoryassoci.at.e67.04@gmail.com
+# Pass          : territoryassoci.at.e67.04@gmail.com
+# Max Request   : 1500 on day
+
+# default My Proxy
+defaultMyProxy="socks5://127.0.0.1:1089"
+
+# API Key 
+# ApiKey="bf784d91a6d0943ded0400107856d8c2f531517dc4592d74057bf71d"
+
+# Reset
+Color_Off='\033[0m'       # Text Reset
+
+# Regular Colors
+Black='\033[0;30m'        # Black
+Red='\033[0;31m'          # Red
+## Green='\033[0;32m'        # Green
+Yellow='\033[0;33m'       # Yellow
+Blue='\033[0;34m'         # Blue
+Purple='\033[0;35m'       # Purple
+Cyan='\033[0;36m'         # Cyan
+White='\033[0;37m'        # White
+
+# Underline
+UBlack='\033[4;30m'       # Black
+URed='\033[4;31m'         # Red
+## UGreen='\033[4;32m'       # Green
+UYellow='\033[4;33m'      # Yellow
+UBlue='\033[4;34m'        # Blue
+UPurple='\033[4;35m'      # Purple
+UCyan='\033[4;36m'        # Cyan
+UWhite='\033[4;37m'       # White
+
+# Background
+On_Black='\033[40m'       # Black
+On_Red='\033[41m'         # Red
+## On_Green='\033[42m'       # Green
+On_Yellow='\033[43m'      # Yellow
+On_Blue='\033[44m'        # Blue
+On_Purple='\033[45m'      # Purple
+On_Cyan='\033[46m'        # Cyan
+On_White='\033[47m'       # White
+
+textHelp=""" ${Red}--------------------${Color_Off}
+ `echo -e "${Purple}\$ ${Color_Off}$(basename ${0}) ${Blue}[option] ${Color_Off}"`
+
+ [option]
+    -t | tor                   : set proxy default tor port 9050
+    -t2 | tor2                 : set proxy default tor port 9150
+    -s [Proxy] | set [Proxy]   : set Proxy custom
+    -me | me                   : set proxy default config me (${defaultMyProxy})
+    -d | --unset | d | unset   : un set Proxy in terminal 
+    -h | --help | help         : echo Help
+    -status | status           : echo Status
+    -err                       : echo show Errors
+
+ [Proxy] 
+    -P [Protcol]               : set Protcol (h = http, hs = https, s5 = socks5) (default s5)
+    -H [Host] | Host [Host]    : set Host Proxy custom (default 127.1)
+    -p | prot                  : set port Proxy custom (default 9050)
+
+ [Host]
+    -H [HostName]              : set Host (127.1, 127.0.0.1 , ::, Hsot external{Domain})
+
+ [example]
+    -> example: http://127.0.0.1:1089   
+    -> example: -s -P h -H 127.1 -p 1089 
+
+    -> example: https://127.0.0.1:8889
+    -> example: set -P hs -H 127.1 -p 8889
+    
+    -> example: socks5://127.0.0.1:9050 
+    -> example: set -P s5 -H 127.1 -p 9050
+        
+
+ myExample: $ $(basename ${0}) socks5://127.1:9050
+ myExample: $ $(basename ${0}) set -P s5 -p 9050
+ myExample: $ $(basename ${0}) set -P s5 -H 127.1 -p 9050 
+ myExample: $ $(basename ${0}) set -H 0
+ myExample: $ $(basename ${0}) me """
+
+textErr=""" ${Red}-----------------------------------${Color_Off}
+ [${Red}err${Color_Off}] ${On_Red} proxy Off | set proxy false ${Color_Off}
+ ${Red}-----------------------------------${Color_Off}"""
+
+export _OLD_PS1="$PS1"
+
+setProxy() {
+
+    option="${1}" 
+
+    case ${option} in
+        -h|--help|help)
+            echo -e "$textHelp"
+        ;;
+        -t|tor)
+            proxy='socks5://127.0.0.1:9050'
+            emoji_status="🟣${On_Purple} tor ${Color_Off}"
+            _FuncSetProxy
+        ;;
+        -t2|tor2)
+            proxy='socks5://127.0.0.1:9150'
+            emoji_status="🟣${On_Purple} tor2 ${Color_Off}"
+            _FuncSetProxy
+        ;;
+        -me|me)
+            proxy="$defaultMyProxy"
+            emoji_status="🟢${On_Cyan} me ${Color_Off}"
+            _FuncSetProxy
+        ;;
+
+        -s|set) 
+            if [[ ${2} =~ ^(http|https|socks5)\:\/\/[0-9a-zA-Z]+\.*[0-9a-zA-Z]*\.*[0-9a-zA-Z]*\.*[0-9a-zA-Z]*\:[0-9]+ ]]; then
+                proxy="$2"
+                emoji_status="🟢${On_Cyan} set ${Color_Off}"
+                _FuncSetProxy
+            else
+                setProtcolDefault="socks5"
+                setHostDefault="127.1"
+                setPortDefault="9050"
+
+                _setOption=(${*})
+                setOption=(${_setOption[@]:1})
+                for i in {1..6}; do
+                    # echo "$((++i)) ${setOption[$i]}"
+                    if [[ ${setOption[$i]} == "-P" ]]; then
+                        case ${setOption[$((++i))]} in
+                            h|http)
+                                setProtcolDefault="http"
+                            ;;
+                            hs|https)
+                                setProtcolDefault="https"
+                            ;;
+                            s5|socks5)
+                                setProtcolDefault="socks5"
+                            ;;
+                            # *)
+                            #     echo -e "${On_Red} Protcol false ${Color_Off}"
+                            #     return
+                            # ;;
+                        esac
+                    fi
+                    if [[ ${setOption[$i]} == "-H" ]]; then
+                        setHostDefault=${setOption[$((++i))]}
+                    fi
+                    if [[ ${setOption[$i]} == "-p" ]]; then
+                        setPortDefault=${setOption[$((++i))]}
+                    fi
+                done
+                proxy="${setProtcolDefault}://${setHostDefault}:${setPortDefault}"
+                emoji_status="🟢${On_Cyan} set ${Color_Off}"
+                echo "[set ${On_Blue} $proxy ${Color_Off}]"
+                _FuncSetProxy
+            fi
+        ;;
+
+        -d|--unset|d|unset)
+            if [ ! -z $http_proxy ]; then
+                _FuncUnSetProxy
+                echo -e "${On_Blue} unset Proxy Done ! ${Color_Off}"
+                return
+            else 
+                echo -e "${On_Cyan} no set Proxy !!! ${Color_Off}"
+            fi
+        ;;
+        *)
+            echo -e "$textHelp"
+        ;;
+    esac
+
+}
+
+_FuncSetProxy() {
+
+    _FuncUnSetProxy
+
+    export http_proxy="$proxy"
+    export https_proxy="$proxy"
+    # req=`curl -s https://api.ipdata.co\?api-key="${ApiKey}" | jq -r "."`
+    req=`curl -skl http://ip-api.com/json/ | jq -r "."`
+    # my_ip=`echo "$req" | jq -r .ip`
+    my_ip=`echo "$req" | jq -r .query`
+    # country_name=`echo "$req" | jq -r ".country_name"`
+    country_name=`echo "$req" | jq -r ".country"`
+
+    if [[ ! $my_ip ]]; then
+        echo -e "$textErr"
+        my_ip="${On_Red}err${Color_Off}"
+        emoji_status="🔴${On_Red} X ${Color_Off}"
+        country_name="-"
+    fi
+
+    export PS1=`echo -e "\n -> [$emoji_status][ ${my_ip} ][ $country_name ] ${PS1-}"`
+
+}
+
+_FuncUnSetProxy() {
+
+    unset http_proxy
+    unset https_proxy  
+    export PS1="${_OLD_PS1-}"
+
+}
