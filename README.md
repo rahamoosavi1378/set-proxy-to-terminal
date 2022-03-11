@@ -4,6 +4,12 @@ set proxy to terminal (bash and zsh) (http - https - socks5)
 
 ## Set Up
 
+Installation prerequisites :
+
+-   jq : Download jq and install (https://stedolan.github.io/jq/download/)
+-   Tor Browser (optional) (https://www.torproject.org/download/)
+-   tor (optional) (https://gist.github.com/lukechilds/0be1d56ecd28092822e4fa750b5945c0)
+
 add code :
 
 ```zsh
