@@ -19,7 +19,7 @@ source $HOME/[Directory]/setProxy
 to `.zshrc` or `.bashrc`
 
 ---
-* New feature: set proxy to apt or apt-get *
+* New feature: set proxy to apt or apt-get
 ---
 
 ## help
