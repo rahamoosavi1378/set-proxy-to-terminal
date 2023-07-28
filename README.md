@@ -65,5 +65,3 @@ $ setProxy -h
 
 <!-- photos  -->
 <!-- ![$ setProxy tor](https://) -->
-
-[my page](http://rm1378.me/)
